@@ -13,7 +13,7 @@ type Branch struct {
 type CreateBranch struct {
 	Name      string    `json:"name"`
 	Address   string    `json:"address"`
-	CreatedAt time.Time `json:"-"`
+	CreatedAt time.Time `json:"created_at"`
 }
 type UpdateBranch struct {
 	ID        string    `json:"-"`

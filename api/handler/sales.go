@@ -17,18 +17,17 @@ func (h Handler) CreateSale(c *gin.Context) {
 	}
 	id, err := h.storage.Sale().Create(createsale)
 	if err != nil {
-		handleResponse(c, "error is while getting by id sale", 500, err.Error())
+		handleResponse(c, "error while creating sale", 500, err.Error())
 		return
 	}
 	res, err := h.storage.Sale().GetById(models.PrimaryKey{ID: id})
 	if err != nil {
-
-		handleResponse(c, "error while getting by id after creating sale", 500, err.Error())
+		handleResponse(c, "error while getting sale by id after creation", 500, err.Error())
 		return
 	}
-	handleResponse(c, "", 200, res)
-
+	handleResponse(c, "sale created successfully", 200, res)
 }
+
 func (h Handler) GetByIdSale(c *gin.Context) {
 	var err error
 	uid := c.Param("id")
@@ -94,7 +93,7 @@ func (h Handler) UpdateSale(c *gin.Context) {
 func (h Handler) DeleteSale(c *gin.Context) {
 	uid := c.Param("id")
 	saleid := models.PrimaryKey{ID: uid}
-	if err := h.storage.Branch().Delete(saleid); err != nil {
+	if err := h.storage.Sale().Delete(saleid); err != nil {
 		handleResponse(c, "error while deleting sale", 500, err)
 		return
 	}

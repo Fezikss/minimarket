@@ -11,16 +11,16 @@ func New(store storage.IStorage) *gin.Engine {
 	h := handler.New(store)
 	r := gin.New()
 	r.POST("/branch", h.CreateBranch)
-	r.GET("/branch", h.GetByIdBranch)
+	r.GET("/branch/:id", h.GetByIdBranch)
 	r.GET("/branchs", h.GetListBranch)
-	r.PUT("/branch", h.UpdateBranch)
-	r.DELETE("/branch", h.DeleteBranch)
+	r.PUT("/branch/:id", h.UpdateBranch)
+	r.DELETE("/branch/:id", h.DeleteBranch)
 
 	r.POST("/sale", h.CreateSale)
-	r.GET("/sale", h.GetByIdSale)
+	r.GET("/sale/:id", h.GetByIdSale)
 	r.GET("/sales", h.GetListSale)
-	r.PUT("/sale", h.UpdateSale)
-	r.DELETE("/sale", h.DeleteSale)
+	r.PUT("/sale/:id", h.UpdateSale)
+	r.DELETE("/sale/:id", h.DeleteSale)
 
 	return r
 }

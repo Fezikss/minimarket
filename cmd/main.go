@@ -6,6 +6,7 @@ import (
 	"main.go/api"
 	"main.go/config"
 	"main.go/storage/postgres"
+	_"github.com/lib/pq"
 )
 
 func main() {
