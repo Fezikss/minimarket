@@ -83,7 +83,7 @@ func (b branchRepo) GetList(request models.GetListRequest) (models.BranchRespons
 func (b branchRepo) Update(branch models.UpdateBranch) (string, error) {
 	branchs := models.Branch{}
 	branch.UpdatedAt = time.Now()
-	if _, err := b.DB.Exec(`update branch set name=$1,address=$2,updated_at=$3 where id=$4`, &branch.Name, &branch.Address, &branch.UpdatedAt, branch.ID); err != nil {
+	if _, err := b.DB.Exec(`update branch set name=$1,address=$2,updated_at=$3 where id=$4`, &branch.Name, &branch.Address, &branch.UpdatedAt, &branch.ID); err != nil {
 		return "", err
 	}
 	if err := b.DB.QueryRow(`select id , name, address, updated_at, created_at from branch where id=$1`, branch.ID).Scan(&branchs.ID, &branchs.Name, &branchs.Address, &branchs.UpdatedAt, &branchs.CreatedAt); err != nil {

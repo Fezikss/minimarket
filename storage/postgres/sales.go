@@ -73,32 +73,34 @@ func (s saleRepo) GetList(request models.GetListRequest) (models.SaleResponse, e
 		return models.SaleResponse{}, err
 	}
 	for rows.Next() {
-		b := models.Branch{}
-		if err = rows.Scan(&b.ID, &b.Name, &b.Address, &b.UpdatedAt, &b.CreatedAt); err != nil {
-			fmt.Println("error while getting list og branchs ")
+		sale:=models.Sale{}
+		if err = rows.Scan(&sale.ID,&sale.BranchID,&sale.ShopAssistantID,&sale.Cashier,&sale.PaymentType,&sale.Price,&sale.ClientName,&sale.ClientName,&sale.CreatedAt); err != nil {
+			fmt.Println("error while getting list of sales ")
 			return models.SaleResponse{}, err
 		}
-		branchs = append(branchs, b)
+		sales = append(sales,sale)
 	}
-	return models.BranchResponse{
-		Branchs: branchs,
-		Count:   count,
-	}, nil
+	return models.SaleResponse{
+		Sales: sales,
+		Count: count,
+		
+	} ,nil
 }
-func (b branchRepo) Update(branch models.UpdateBranch) (string, error) {
-	branchs := models.Branch{}
-	branch.UpdatedAt = time.Now()
-	if _, err := b.DB.Exec(`update branch set name=$1,address=$2,updated_at=$3 where id=$4`, &branch.Name, &branch.Address, &branch.UpdatedAt, branch.ID); err != nil {
+func (s saleRepo) Update(sale models.UpdateSale) (string, error) {
+	sales:=models.Sale{}
+	sale.UpdatedAt = time.Now()
+	if _, err := s.DB.Exec(`update sale set branch_id=$1,shop_assistant=$2,cashier=$3 ,payment_type=$4,price=$5,updated_at=$6 where id=$7`, 
+	&sale.BranchID,&sale.ShopAssistantID,&sale.Cashier,&sale.PaymentType,&sale.Price,&sale.UpdatedAt,&sale.ID); err != nil {
 		return "", err
 	}
-	if err := b.DB.QueryRow(`select id , name, address, updated_at, created_at from branch where id=$1`, branch.ID).Scan(&branchs.ID, &branchs.Name, &branchs.Address, &branchs.UpdatedAt, &branchs.CreatedAt); err != nil {
-		fmt.Println("error while updating branch ")
+	if err := s.DB.QueryRow(`select * from sale where id=$1`, sales.ID).Scan(&sales.ID,&sales.BranchID,&sales.ShopAssistantID,&sales.Cashier,&sales.PaymentType,&sales.Price,&sales.Status,&sales.ClientName,&sales.UpdatedAt,&sales.CreatedAt); err != nil {
+		fmt.Println("error while updating sales")
 		return "", err
 	}
-	return branchs.ID, nil
+	return sales.ID, nil
 }
-func (b branchRepo) Delete(pk models.PrimaryKey) error {
-	if _, err := b.DB.Exec(`delete from branch where id=$1`, pk.ID); err != nil {
+func (s saleRepo) Delete(pk models.PrimaryKey) error {
+	if _, err := s.DB.Exec(`delete from sale where id=$1`, pk.ID); err != nil {
 		return err
 	}
 	return nil
