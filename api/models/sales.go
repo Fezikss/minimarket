@@ -32,6 +32,7 @@ type UpdateSale struct {
 	Cashier         string  `json:"cashier"`
 	PaymentType     string  `json:"payment_type"`
 	Price           float64 `json:"price"`
+	UpdatedAt       time.Time  `json:"updated_at"`
 }
 type SaleResponse struct {
 	Sales []Sale `json:"sales"`

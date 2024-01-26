@@ -11,17 +11,16 @@ func New(store storage.IStorage) *gin.Engine {
 	h := handler.New(store)
 	r := gin.New()
 	r.POST("/branch", h.CreateBranch)
-	r.GET("/branch", h.GetByIdBranch)
+	r.GET("/branch/:id", h.GetByIdBranch)
 	r.GET("/branchs", h.GetListBranch)
-	r.PUT("/branch", h.UpdateBranch)
-	r.DELETE("/branch", h.DeleteBranch)
+	r.PUT("/branch/:id", h.UpdateBranch)
+	r.DELETE("/branch/:id", h.DeleteBranch)
 
-	r.POST("/sale", h.)
-	r.GET("/sale", h.)
-	r.GET("/sales", h.)
-	r.PUT("/sale", h.)
-	r.DELETE("/sale", h.DeleteBranch)
+	r.POST("/sale", h.CreateSale)
+	r.GET("/sale/:id", h.GetByIdSale)
+	r.GET("/sales", h.GetListSale)
+	r.PUT("/sale/:id", h.UpdateSale)
+	r.DELETE("/sale/:id", h.DeleteSale)
 
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	return r
 }

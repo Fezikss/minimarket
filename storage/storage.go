@@ -16,7 +16,7 @@ type IBranchStorage interface {
 }
 type ISaleStorage interface {
 	Create(models.CreateSale) (string, error)
-	GetById(models.PrimaryKey) (string, error)
+	GetById(models.PrimaryKey) (models.Sale, error)
 	GetList(models.GetListRequest) (models.SaleResponse, error)
 	Update(models.UpdateSale) (string, error)
 	Delete(models.PrimaryKey) error

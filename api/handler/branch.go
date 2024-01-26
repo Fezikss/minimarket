@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -73,24 +72,23 @@ func (h Handler) UpdateBranch(c *gin.Context) {
 	updatebranch := models.UpdateBranch{}
 	uid := c.Param("id")
 	if err := c.ShouldBindJSON(&updatebranch); err != nil {
-		handleResponse(c, "erro while decoding branch", 500, err.Error())
+		handleResponse(c, "error while decoding branch", 500, err.Error())
 		return
 	}
 	updatebranch.ID = uid
 	if _, err := h.storage.Branch().Update(updatebranch); err != nil {
-		handleResponse(c, "error while updating basket", 500, err.Error())
+		handleResponse(c, "error while updating branch", 500, err.Error())
 		return
 	}
 	ids := models.PrimaryKey{ID: uid}
 	res, err := h.storage.Branch().GetById(ids)
 	if err != nil {
-		fmt.Println("error while getting by id")
-		handleResponse(c, "error", 500, err.Error())
+		handleResponse(c, "error while getting branch by ID", 500, err.Error())
 		return
 	}
-	handleResponse(c, "", 200, res)
-
+	handleResponse(c, "branch updated successfully", 200, res)
 }
+
 func (h Handler) DeleteBranch(c *gin.Context) {
 	uid := c.Param("id")
 	branchid := models.PrimaryKey{ID: uid}
