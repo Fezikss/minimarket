@@ -140,7 +140,7 @@ CREATE TABLE "basket" (
   "product_id" uuid,
   "quantity" int,
   "price" numeric,
-  "sale_id" 
+  "sale_id" uuid,
   "update_at" timestamp DEFAULT (NOW()),
   "created_at" timestamp DEFAULT (NOW()),
   "deleted_at" timestamp DEFAULT null
@@ -169,5 +169,7 @@ ALTER TABLE "storagetransaction" ADD FOREIGN KEY ("branch_id") REFERENCES "branc
 ALTER TABLE "storagetransaction" ADD FOREIGN KEY ("staff_id") REFERENCES "staff" ("id");
 
 ALTER TABLE "storagetransaction" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
+
+ALTER TABLE "basket" ADD FOREIGN KEY ("sale_id") REFERENCES "sale" ("id");
 
 ALTER TABLE "basket" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
