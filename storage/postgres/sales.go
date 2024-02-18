@@ -100,6 +100,7 @@ func (s saleRepo) Update(ctx context.Context, sale models.UpdateSale) (string, e
 	}
 	return sales.ID, nil
 }
+
 func (s saleRepo) Delete(ctx context.Context, pk models.PrimaryKey) error {
 	if _, err := s.DB.Exec(ctx, `delete from transaction where id=$1`, pk.ID); err != nil {
 		return err
@@ -109,4 +110,10 @@ func (s saleRepo) Delete(ctx context.Context, pk models.PrimaryKey) error {
 	}
 	return nil
 
+}
+func (s saleRepo) UpdatePriceSale(ctx context.Context, req models.EndSaleUpdate) (string, error) {
+	if _, err := s.DB.Exec(ctx, `update sale set price=$1 where id=$2`, req.Price, req.ID); err != nil {
+		return "", nil
+	}
+	return req.ID, nil
 }

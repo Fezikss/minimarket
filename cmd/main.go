@@ -4,7 +4,6 @@ import (
 	"context"
 	"log"
 
-
 	"main.go/api"
 	"main.go/config"
 	"main.go/storage/postgres"
@@ -13,7 +12,7 @@ import (
 func main() {
 	cfg := config.Load()
 
-	store, err := postgres.New(context.Background(),cfg)
+	store, err := postgres.New(context.Background(), cfg)
 	if err != nil {
 		log.Fatalln("error while connecting to db err:", err.Error())
 		return
@@ -22,7 +21,7 @@ func main() {
 
 	server := api.New(store)
 
-	if err = server.Run("localhost:8080"); err != nil {
+	if err = server.Run("localhost:8058"); err != nil {
 		panic(err)
 	}
 }

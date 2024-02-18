@@ -44,7 +44,7 @@ func New(ctx context.Context, cfg config.Config) (storage.IStorage, error) {
 	}
 
 	// migration
-	fmt.Println("test1")
+	fmt.Println("migrating...")
 	m, err := migrate.New("file://migration/postgres/", url)
 
 	if err != nil {
@@ -99,4 +99,20 @@ func (s *Store) Product() storage.IProductStorage {
 func (s *Store) Storage() storage.IStorageStorage {
 	return NewStorageRepo(s.pool)
 
+}
+func (s *Store) Basket() storage.IBasketStorage {
+	return NewBasketRepo(s.pool)
+}
+func (s *Store) StorageTransaction() storage.IStorageTransaction {
+	return NewStorageTransactionRepo(s.pool)
+}
+func (s *Store) Staff() storage.IStaffStorage {
+	return NewStaffRepo(s.pool)
+
+}
+func (s *Store) StaffTariff() storage.IStaffTariffStorage {
+	return NewStaffTariffRepo(s.pool)
+}
+func (s *Store) Transaction() storage.ITransactionStorage {
+	return NewTransactionRepo(s.pool)
 }

@@ -43,7 +43,108 @@ func (h Handler) CreateProduct(c *gin.Context) {
 
 }
 
-// GetProduct godoc
+// CreateBarcodeProduct godoc
+// @Router       /barcode [POST]
+// @Summary      productbarcode
+// @Description  productbarcode
+// @Tags         barcode
+// @Accept       json
+// @Produce      json
+// @Param        barcode path string true "barcode"
+// @Param        sale_id  path string true "sale_id"
+// @Param        count path int true "count"
+// @Success      201  {object}  models.Response
+// @Failure      400  {object}  models.Response
+// @Failure      404  {object}  models.Response
+// @Failure      500  {object}  models.Response
+func (h Handler) BarcodeProduct(c *gin.Context) {
+	saleid := c.Param("sale_id")
+	barcode := c.Param("barcode")
+	countstring := c.Param("count")
+	count, err := strconv.Atoi(countstring)
+	if err != nil {
+		fmt.Println("can not converting count to integer")
+	}
+
+	result, err := h.storage.Sale().GetById(context.Background(), models.PrimaryKey{ID: saleid})
+	if err != nil {
+		handleResponse(c, "not found", 400, "error")
+		return
+	}
+	if result.Status == "success" {
+		handleResponse(c, "sale is success", 200, "continue")
+		return
+	} else if result.Status == "finish" {
+		handleResponse(c, "sale is finished", 200, "restart again")
+		return
+	}
+
+	productslist, err := h.storage.Product().GetList(context.Background(), models.GetListRequestProduct{Page: 1, Limit: 10, Search: barcode})
+	if err != nil {
+		handleResponse(c, "error getting list", 500, "error")
+		return
+	}
+
+	var productid string
+	for _, v := range productslist.Products {
+		productid = v.ID
+	}
+
+	baskets, err := h.storage.Basket().GetList(context.Background(), models.GetListRequest{Page: 1, Limit: 10, Search: saleid})
+
+	if err != nil {
+		handleResponse(c, "error getting list of baskets in barcode logic", 500, err.Error())
+		return
+	}
+
+	storages, err := h.storage.Storage().GetList(context.Background(), models.GetListRequest{Page: 1, Limit: 10, Search: saleid})
+	if err != nil {
+		fmt.Println(err.Error())
+		handleResponse(c, "error getting list of storage in barcode logic", 500, err.Error())
+		return
+	}
+
+	
+
+	// mapp := map[string]int{}
+
+	// for _, basketvalue := range baskets.Basket {
+	// 	mapp[basketvalue.ProductID] = basketvalue.Quantity
+	// }
+	mapstorage := map[string]models.Storage{}
+
+	for _, storagevalue := range storages.Storages {
+		mapstorage[storagevalue.ID] = storagevalue
+	}
+
+	for _, basketvalue := range baskets.Basket {
+		if productid == basketvalue.ProductID && mapstorage[basketvalue.ProductID].Count > count {
+
+			updatedbasket, err := h.storage.Basket().Update(context.Background(), models.UpdateBasket{
+				ID:        basketvalue.ID,
+				ProductID: basketvalue.ProductID,
+				Price:     basketvalue.Price,
+				Quantity:  mapstorage[basketvalue.ProductID].Count - basketvalue.Quantity,
+			})
+			if err != nil {
+				handleResponse(c, "error updating basket by barcode", 500, err.Error())
+				return
+			}
+			handleResponse(c, "succes", 200, updatedbasket)
+
+		}
+
+	}
+
+	createdbasket, err := h.storage.Basket().Create(context.Background(), models.CreateBasket{})
+	if err != nil {
+		handleResponse(c, "error while creating basket", 200, err)
+		return
+	}
+	handleResponse(c, "succes", 201, createdbasket)
+}
+
+// GetByIdProduct godoc
 // @Router       /product/{id} [GET]
 // @Summary      Gets product
 // @Description  get product by ID
@@ -104,9 +205,10 @@ func (h Handler) GetListProduct(c *gin.Context) {
 	}
 	search = c.Query("search")
 	barcodestr := c.Query("barcode")
-	barcode,err=strconv.Atoi(barcodestr)
-	if err!=nil{
-		handleResponse(c,"error while converting barcode",400,err.Error())
+	barcode, err = strconv.Atoi(barcodestr)
+
+	if err != nil {
+		handleResponse(c, "error while converting barcode", 400, err.Error())
 	}
 	product, err := h.storage.Product().GetList(context.Background(), models.GetListRequestProduct{
 		Page:    page,

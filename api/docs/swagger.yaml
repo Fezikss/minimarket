@@ -1,4 +1,32 @@
 definitions:
+  models.Basket:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: string
+      price:
+        type: number
+      product_id:
+        type: string
+      quantity:
+        type: integer
+      sale_id:
+        type: string
+      update_at:
+        type: string
+    type: object
+  models.BasketResponse:
+    properties:
+      baskets:
+        items:
+          $ref: '#/definitions/models.Basket'
+        type: array
+      count:
+        type: integer
+    type: object
   models.Branch:
     properties:
       address:
@@ -47,6 +75,17 @@ definitions:
       count:
         type: integer
     type: object
+  models.CreateBasket:
+    properties:
+      price:
+        type: number
+      product_id:
+        type: string
+      quantity:
+        type: integer
+      sale_id:
+        type: string
+    type: object
   models.CreateBranch:
     properties:
       address:
@@ -86,12 +125,8 @@ definitions:
         type: string
       client_name:
         type: string
-      created_at:
-        type: string
       payment_type:
         type: string
-      price:
-        type: number
       shop_assistant_id:
         type: string
       status:
@@ -106,6 +141,19 @@ definitions:
       created_at:
         type: string
       product_id:
+        type: string
+    type: object
+  models.CreateStorageTransaction:
+    properties:
+      price:
+        type: integer
+      product_id:
+        type: string
+      quantity:
+        type: integer
+      staff_id:
+        type: string
+      storagetransaction_type:
         type: string
     type: object
   models.Product:
@@ -204,6 +252,41 @@ definitions:
           $ref: '#/definitions/models.Storage'
         type: array
     type: object
+  models.StorageTransaction:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      price:
+        type: integer
+      product_id:
+        type: string
+      quantity:
+        type: integer
+      staff_id:
+        type: string
+      storagetransaction_type:
+        type: string
+      update_at:
+        type: string
+    type: object
+  models.StorageTransactionsResponse:
+    properties:
+      count:
+        type: integer
+      storagetransaction:
+        items:
+          $ref: '#/definitions/models.StorageTransaction'
+        type: array
+    type: object
+  models.UpdateBasket:
+    properties:
+      product_id:
+        type: string
+      quantity:
+        type: integer
+    type: object
   models.UpdateBranch:
     properties:
       address:
@@ -253,9 +336,202 @@ definitions:
       product_id:
         type: string
     type: object
+  models.UpdateStorageTransaction:
+    properties:
+      price:
+        type: integer
+      product_id:
+        type: string
+      quantity:
+        type: integer
+      staff_id:
+        type: string
+      storagetransaction_type:
+        type: string
+      update_at:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
+  /basket:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new basket
+      parameters:
+      - description: basket
+        in: body
+        name: basket
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateBasket'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Creates a new basket
+      tags:
+      - basket
+  /basket/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete basket
+      parameters:
+      - description: basket_id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Delete basket
+      tags:
+      - basket
+    put:
+      consumes:
+      - application/json
+      description: update basket
+      parameters:
+      - description: basket_id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: basket
+        in: body
+        name: basket
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateBasket'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Basket'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Update basket
+      tags:
+      - basket
+  /basket{id}:
+    get:
+      consumes:
+      - application/json
+      description: get basket by id
+      parameters:
+      - description: basket
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Basket'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Get basket by id
+      tags:
+      - basket
+  /baskets:
+    get:
+      consumes:
+      - application/json
+      description: get baskets list
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        type: string
+      - description: search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.BasketResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Get baskets list
+      tags:
+      - basket
   /branch:
     post:
       consumes:
@@ -323,38 +599,6 @@ paths:
       summary: Delete branch
       tags:
       - branch
-    get:
-      consumes:
-      - application/json
-      description: get branch by id
-      parameters:
-      - description: branch
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Branch'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      summary: Get branch by id
-      tags:
-      - branch
     put:
       consumes:
       - application/json
@@ -391,6 +635,39 @@ paths:
           schema:
             $ref: '#/definitions/models.Response'
       summary: Update branch
+      tags:
+      - branch
+  /branch{id}:
+    get:
+      consumes:
+      - application/json
+      description: get branch by id
+      parameters:
+      - description: branch
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Branch'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Get branch by id
       tags:
       - branch
   /branchs:
@@ -609,6 +886,39 @@ paths:
       summary: Update category
       tags:
       - category
+  /endsale/{id}:
+    put:
+      consumes:
+      - application/json
+      description: update endsale
+      parameters:
+      - description: end_sale_id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Sale'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Update endsale
+      tags:
+      - endsale
   /product:
     post:
       consumes:
@@ -965,6 +1275,39 @@ paths:
       summary: Get user list
       tags:
       - sale
+  /startsale:
+    post:
+      consumes:
+      - application/json
+      description: create a new sale
+      parameters:
+      - description: sale
+        in: body
+        name: sale
+        schema:
+          $ref: '#/definitions/models.CreateSale'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Sale'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Creates a new sale
+      tags:
+      - sale
   /storage:
     post:
       consumes:
@@ -1141,4 +1484,179 @@ paths:
       summary: Get storage list
       tags:
       - storage
+  /storagetransaction:
+    post:
+      consumes:
+      - application/json
+      description: create a new stransaction
+      parameters:
+      - description: stransaction
+        in: body
+        name: stransaction
+        schema:
+          $ref: '#/definitions/models.CreateStorageTransaction'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.StorageTransaction'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Create a new stransaction
+      tags:
+      - stransaction
+  /storagetransaction/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete stransaction
+      parameters:
+      - description: stransaction_id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Delete stransaction
+      tags:
+      - stransaction
+    get:
+      consumes:
+      - application/json
+      description: get stransaction by id
+      parameters:
+      - description: stransaction_id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.StorageTransaction'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Get stransaction by id
+      tags:
+      - stransaction
+    put:
+      consumes:
+      - application/json
+      description: get stransaction
+      parameters:
+      - description: stransaction_id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: stransaction
+        in: body
+        name: rtransaction
+        schema:
+          $ref: '#/definitions/models.UpdateStorageTransaction'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Storage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Update stransaction
+      tags:
+      - stransaction
+  /storagetransactions:
+    get:
+      consumes:
+      - application/json
+      description: get stransaction list
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        type: string
+      - description: search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.StorageTransactionsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Get stransaction list
+      tags:
+      - stransaction
 swagger: "2.0"

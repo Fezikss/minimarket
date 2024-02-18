@@ -43,7 +43,7 @@ func (h Handler) CreateBranch(c *gin.Context) {
 }
 
 // GetByIdBranch   godoc
-// @Router            /branch/{id} [GET]
+// @Router            /branch{id} [GET]
 // @Summary           Get branch by id
 // @Description       get branch by id
 // @Tags              branch

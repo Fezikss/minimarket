@@ -53,12 +53,12 @@ func (s storageRepo) GetList(ctx context.Context, request models.GetListRequest)
 		query, countquery string
 		page              = request.Page
 		offset            = (page - 1) * request.Limit
-		search            = request.Search
+		// search            = request.Search
 	)
 	countquery = `select count(1) from storage `
-	if search != "" {
-		countquery += fmt.Sprintf(` and count ilike '%%%s'`, search)
-	}
+	// if search != "" {
+	// 	countquery += fmt.Sprintf(`  ='%d'`, search)
+	// }
 	if err := s.DB.QueryRow(ctx, countquery).Scan(&count); err != nil {
 		fmt.Println("error while counting")
 		return models.StorageResponse{}, err
